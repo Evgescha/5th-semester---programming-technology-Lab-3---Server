@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
-public class Server {
+public class Server implements Runnable{
 
 	public static void main(String[] args) throws IOException {
 		
@@ -44,17 +44,34 @@ public class Server {
 		in = new BufferedReader(new InputStreamReader(fromclient.getInputStream()));
 		out = new PrintWriter(fromclient.getOutputStream(), true);
 		String input, output;
-
+		BufferedReader inu = new BufferedReader(new InputStreamReader(System.in));
 		System.out.println("Ожидание сообщения от клиента");
 		while ((input = in.readLine()) != null) {
 			if (input.equalsIgnoreCase("exit"))
 				break;
-			out.println("Сервер: " + input);
+			String a = inu.readLine();
+			if (a != null) out.println("Сервер: " + a);
 			System.out.println(input);
 		}
 		out.close();
 		in.close();
 		fromclient.close();
 		servers.close();
+		
+		
 	}
+/*
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		while ((input = in.readLine()) != null) {
+			if (input.equalsIgnoreCase("exit"))
+				break;
+			String a = inu.readLine();
+			if (a != null) out.println("Сервер: " + a);
+			System.out.println(input);
+		}
+	}
+	*/
+	
 }
