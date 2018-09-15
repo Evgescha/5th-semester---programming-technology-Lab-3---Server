@@ -2,27 +2,27 @@ import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
-public class Server implements Runnable{
+public class Server implements Runnable {
 
-	public static void main(String[] args) throws IOException {
-		
-		BufferedReader in = null;
-		PrintWriter out = null;
+	static String input, output;
+	static BufferedReader in = null;
+	static PrintWriter out = null;
+	static Server serv;
 
+	private void Go() throws IOException {
 		ServerSocket servers = null;
 		Socket fromclient = null;
-		
+
 		Scanner sc = new Scanner(System.in);
-		
+
 		System.out.println("Добро пожаловать на сервер.");
 		System.out.println("");
-		
-		InetAddress IP=InetAddress.getLocalHost();
-		System.out.println("IP адрес системы - "+IP.getHostAddress());
-		
+
+		InetAddress IP = InetAddress.getLocalHost();
+		System.out.println("IP адрес системы - " + IP.getHostAddress());
+
 		System.out.println("Введите порт для работы с клиентами (8080 по умолчанию)");
 		int portServ = sc.nextInt();
-		
 
 		// create server socket
 		try {
@@ -43,35 +43,44 @@ public class Server implements Runnable{
 
 		in = new BufferedReader(new InputStreamReader(fromclient.getInputStream()));
 		out = new PrintWriter(fromclient.getOutputStream(), true);
-		String input, output;
-		BufferedReader inu = new BufferedReader(new InputStreamReader(System.in));
+
+		new Thread(serv).start();
 		System.out.println("Ожидание сообщения от клиента");
 		while ((input = in.readLine()) != null) {
 			if (input.equalsIgnoreCase("exit"))
 				break;
-			String a = inu.readLine();
-			if (a != null) out.println("Сервер: " + a);
+
 			System.out.println(input);
 		}
 		out.close();
 		in.close();
 		fromclient.close();
 		servers.close();
-		
-		
 	}
-/*
+
+	public static void main(String[] args) throws IOException {
+
+		serv = new Server();
+		serv.Go();
+
+	}
+
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		while ((input = in.readLine()) != null) {
-			if (input.equalsIgnoreCase("exit"))
-				break;
-			String a = inu.readLine();
-			if (a != null) out.println("Сервер: " + a);
-			System.out.println(input);
+		BufferedReader inu = new BufferedReader(new InputStreamReader(System.in));
+		String a;
+		System.out.println("ПОТООК ПОШОООООООЛ");
+		try {
+			while ((output = inu.readLine()) != null) {
+
+				out.println("Сервер: " + output);
+				System.out.println(output);
+				System.out.println("ПОТООК ИДЕЕЕЕЕЕЕЕЕЕЕЕЕЕт");
+			}
+		} catch (IOException e) {
+
+			e.printStackTrace();
 		}
 	}
-	*/
-	
+
 }
