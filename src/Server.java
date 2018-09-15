@@ -1,5 +1,7 @@
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Server implements Runnable {
@@ -8,8 +10,10 @@ public class Server implements Runnable {
 	static BufferedReader in = null;
 	static PrintWriter out = null;
 	static Server serv;
+	static ArrayList<String> list = new ArrayList<String>();
 
 	private void Go() throws IOException {
+
 		ServerSocket servers = null;
 		Socket fromclient = null;
 
@@ -24,7 +28,6 @@ public class Server implements Runnable {
 		System.out.println("Ââåäèòå ïîğò äëÿ ğàáîòû ñ êëèåíòàìè (8080 ïî óìîë÷àíèş)");
 		int portServ = sc.nextInt();
 
-		
 		try {
 			servers = new ServerSocket(portServ);
 		} catch (IOException e) {
@@ -51,6 +54,18 @@ public class Server implements Runnable {
 				break;
 
 			System.out.println(input);
+
+			if (input.contains("getMy_")) {
+				input = input.substring(input.indexOf("_") + 1, input.length());
+				out.println("SMS: " + list.get(Integer.parseInt(input)-1));
+				
+			} 
+			if (input.contains("deleteMy_")) {
+				input = input.substring(input.indexOf("_") + 1, input.length());
+				list.remove(Integer.parseInt(input)-1);
+				out.println("SMS ¹" + input+" has been deleted");
+			} else
+				list.add(input);
 		}
 		out.close();
 		in.close();
@@ -69,17 +84,18 @@ public class Server implements Runnable {
 	public void run() {
 		BufferedReader inu = new BufferedReader(new InputStreamReader(System.in));
 		String a;
-		//System.out.println("ÏÎÒÎÎÊ ÏÎØÎÎÎÎÎÎÎË");
+		// System.out.println("ÏÎÒÎÎÊ ÏÎØÎÎÎÎÎÎÎË");
 		try {
 			while ((output = inu.readLine()) != null) {
 
 				out.println("Ñåğâåğ: " + output);
-				//System.out.println(output);
-				//System.out.println("ÏÎÒÎÎÊ ÈÄÅÅÅÅÅÅÅÅÅÅÅÅÅÅò");
+				list.add(output);
+				// System.out.println(output);
+				// System.out.println("ÏÎÒÎÎÊ ÈÄÅÅÅÅÅÅÅÅÅÅÅÅÅÅò");
 			}
 		} catch (IOException e) {
 			System.out.println("Îáùåíèå ñêîí÷àëîñü(((");
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 
