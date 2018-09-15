@@ -24,7 +24,7 @@ public class Server implements Runnable {
 		System.out.println("Ââåäèòå ïîğò äëÿ ğàáîòû ñ êëèåíòàìè (8080 ïî óìîë÷àíèş)");
 		int portServ = sc.nextInt();
 
-		// create server socket
+		
 		try {
 			servers = new ServerSocket(portServ);
 		} catch (IOException e) {
@@ -69,17 +69,17 @@ public class Server implements Runnable {
 	public void run() {
 		BufferedReader inu = new BufferedReader(new InputStreamReader(System.in));
 		String a;
-		System.out.println("ÏÎÒÎÎÊ ÏÎØÎÎÎÎÎÎÎË");
+		//System.out.println("ÏÎÒÎÎÊ ÏÎØÎÎÎÎÎÎÎË");
 		try {
 			while ((output = inu.readLine()) != null) {
 
 				out.println("Ñåğâåğ: " + output);
-				System.out.println(output);
-				System.out.println("ÏÎÒÎÎÊ ÈÄÅÅÅÅÅÅÅÅÅÅÅÅÅÅò");
+				//System.out.println(output);
+				//System.out.println("ÏÎÒÎÎÊ ÈÄÅÅÅÅÅÅÅÅÅÅÅÅÅÅò");
 			}
 		} catch (IOException e) {
-
-			e.printStackTrace();
+			System.out.println("Îáùåíèå ñêîí÷àëîñü(((");
+			//e.printStackTrace();
 		}
 	}
 
