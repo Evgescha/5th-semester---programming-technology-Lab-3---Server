@@ -12,7 +12,7 @@ public class ClientWrite  implements Runnable  {
 	static String input, output;
 	static BufferedReader in = null;
 	static PrintWriter out = null;
-	static Server serv;
+	static Serverss serv;
 	static ArrayList<String> list = new ArrayList<String>();
 	
 	ServerSocket servers = null;
