@@ -7,7 +7,6 @@ import java.util.Scanner;
 
 public class ServerMain {
 
-	private static final int PORT = 8080;
 
     public static void main(String[] args) throws UnknownHostException {
 
