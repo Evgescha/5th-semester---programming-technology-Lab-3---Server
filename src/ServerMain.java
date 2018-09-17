@@ -39,7 +39,7 @@ public class ServerMain {
             	System.out.println("Провал. Будет произведен выход из приложения");
     			System.exit(-1);
             }
-            new Thread(new Server(socket)).start();
+           // new Thread(new Server(socket)).start();
             System.out.println("Клиент подключился!");
         }
     }
