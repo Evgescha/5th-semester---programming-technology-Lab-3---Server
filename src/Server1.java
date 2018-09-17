@@ -5,135 +5,93 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.xml.stream.events.StartDocument;
 
 class Server1 {
-	 public static LinkedList<Serverss> serverList = new LinkedList<>(); // список всех нитей - экземпляров
-	    // сервера, слушающих каждый своего клиента
+	public static LinkedList<Serverss> serverList = new LinkedList<>(); // СЃРїРёСЃРѕРє РІСЃРµС… РЅРёС‚РµР№ - СЌРєР·РµРјРїР»СЏСЂРѕРІ
+	// СЃРµСЂРІРµСЂР°, СЃР»СѓС€Р°СЋС‰РёС… РєР°Р¶РґС‹Р№ СЃРІРѕРµРіРѕ РєР»РёРµРЅС‚Р°
 
-   public static void main(String[] args) throws UnknownHostException {
+	public static void main(String[] args) throws IOException {
+		Scanner sc = new Scanner(System.in);
 
-       ServerSocket servers = null;
-       Socket socket = null;
-       
-       Scanner sc = new Scanner(System.in);
-
-		System.out.println("Добро пожаловать на сервер.");
+		System.out.println("Р”РѕР±СЂРѕ РїРѕР¶Р°Р»РѕРІР°С‚СЊ РЅР° СЃРµСЂРІРµСЂ.");
 		System.out.println("");
 
 		InetAddress IP = InetAddress.getLocalHost();
-		System.out.println("IP адрес системы - " + IP.getHostAddress());
+		System.out.println("IP Р°РґСЂРµСЃ СЃРёСЃС‚РµРјС‹ - " + IP.getHostAddress());
 
-		System.out.println("Введите порт для работы с клиентами (8080 по умолчанию)");
+		System.out.println("Р’РІРµРґРёС‚Рµ РїРѕСЂС‚ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РєР»РёРµРЅС‚Р°РјРё (8080 РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ)");
 		int portServ = sc.nextInt();
 
+		ServerSocket server = new ServerSocket(portServ);
+		System.out.println("Server Started");
 		try {
-			servers = new ServerSocket(portServ);
-		} catch (IOException e) {
-			System.out.println("Ошибка подключения к порту " + portServ + ". Будет произведен выход из приложения.");
-			System.exit(-1);
-		}
-		// ждем подключения еще кого-нибудь
-       while (true) {
-           try {
-           	System.out.print("Ожидание подключения клиентов...");   
-               socket = servers.accept();
-               serverList.add(new Serverss(socket)); // добавить новое соединенние в список
-           } catch (IOException e) {
-           	try {
+			while (true) {
+				// Р‘Р»РѕРєРёСЂСѓРµС‚СЃСЏ РґРѕ РІРѕР·РЅРёРєРЅРѕРІРµРЅРёСЏ РЅРѕРІРѕРіРѕ СЃРѕРµРґРёРЅРµРЅРёСЏ:
+				Socket socket = server.accept();
+				try {
+					serverList.add(new Serverss(socket)); // РґРѕР±Р°РІРёС‚СЊ РЅРѕРІРѕРµ СЃРѕРµРґРёРЅРµРЅРЅРёРµ РІ СЃРїРёСЃРѕРє
+				} catch (IOException e) {
+					// Р•СЃР»Рё Р·Р°РІРµСЂС€РёС‚СЃСЏ РЅРµСѓРґР°С‡РµР№, Р·Р°РєСЂС‹РІР°РµС‚СЃСЏ СЃРѕРєРµС‚,
+					// РІ РїСЂРѕС‚РёРІРЅРѕРј СЃР»СѓС‡Р°Рµ, РЅРёС‚СЊ Р·Р°РєСЂРѕРµС‚ РµРіРѕ:
 					socket.close();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
 				}
-           	System.out.println("Провал. Будет произведен выход из приложения");
-   			System.exit(-1);
-           }
-           //new Thread(new Server(socket)).start();
-           //System.out.println("Клиент подключился!");
-       }
-   }
+			}
+		} finally {
+			server.close();
+		}
+	}
 }
 
+class Serverss extends Thread {
 
-public class Serverss implements Runnable {
-
-	String input, output;//строки что приняли и что отправляем
+	String input, output;// СЃС‚СЂРѕРєРё С‡С‚Рѕ РїСЂРёРЅСЏР»Рё Рё С‡С‚Рѕ РѕС‚РїСЂР°РІР»СЏРµРј
 	BufferedReader in = null;
 	PrintWriter out = null;
-	Serverss serv;
 	ArrayList<String> list = new ArrayList<String>();
-	ServerSocket servers = null;
 	Socket fromclient = null;
-	Scanner sc = new Scanner(System.in);
 
 	public Serverss(Socket fromclient) throws IOException {
 		this.fromclient = fromclient;
 		in = new BufferedReader(new InputStreamReader(fromclient.getInputStream()));
 		out = new PrintWriter(fromclient.getOutputStream(), true);
-		//BufferedReader inu = new BufferedReader(new InputStreamReader(System.in));
+		// BufferedReader inu = new BufferedReader(new InputStreamReader(System.in));
+		start();
 	}
 
-	public class ClWrie implements Runnable {
-		public void run() {
-			try {
-				
-				while ((input = in.readLine()) != null) {
-					
-					System.out.println(input);
-
-					if (input.contains("getMy_")) {
-						input = input.substring(input.indexOf("_") + 1, input.length());
-						out.println("SMS: " + list.get(Integer.parseInt(input) - 1));
-
-					}
-					if (input.contains("deleteMy_")) {
-						input = input.substring(input.indexOf("_") + 1, input.length());
-						list.remove(Integer.parseInt(input) - 1);
-						out.println("SMS №" + input + " has been deleted");
-					} else
-						list.add(input);
-				}
-				out.close();
-				in.close();
-				fromclient.close();
-				servers.close();
-			} catch (Exception e) {
-
-			}
+	void sendMessage(String msg) {
+		for (Serverss vr : Server1.serverList) {
+			vr.out.println(msg);
 		}
 	}
-
 	@Override
 	public void run() {
-		try {
-			new Thread(new ClWrie()).start();
-			
-			String serverMessage;
-			// System.out.println("ПОТООК ПОШОООООООЛ");
-			try {
-				while (true) {
-					input = in.readLine();
-					System.out.println("В чате пишут: " + input);
-					//out.println("Сервер: " + input);
-					// list.add(output);
-					
-					// System.out.println("ПОТООК ИДЕЕЕЕЕЕЕЕЕЕЕЕЕЕт");
-					
-					for (Serverss vr : Server1.serverList) {
-						out.println(input);
-                    }
-					
-					
-				}
-			} catch (IOException e) {
-				System.out.println("Общение скончалось(((");
-				// e.printStackTrace();
-			}
-		} catch (Exception e) {
 
+		try {
+			while (true) {
+				input = in.readLine();
+				
+				System.out.println("Р’ С‡Р°С‚Рµ РїРёС€СѓС‚: " + input);
+				if (input.contains("getMy_")) {
+					input = input.substring(input.indexOf("_") + 1, input.length());
+					sendMessage("SMS: " + list.get(Integer.parseInt(input)));
+					
+				} 
+				if (input.contains("deleteMy_")) {
+					input = input.substring(input.indexOf("_") + 1, input.length());
+					list.remove(Integer.parseInt(input));
+					sendMessage("SMS " + input+" has been deleted");
+				} else {
+					list.add(input);
+
+				sendMessage(input);
+				}
+			}
+		} catch (IOException e) {
+			System.out.println("РћР±С‰РµРЅРёРµ СЃРєРѕРЅС‡Р°Р»РѕСЃСЊ(((");
+			// e.printStackTrace();
 		}
+
 	}
 
 }
-
-
